@@ -163,9 +163,6 @@ export default class AccountProfile extends React.Component {
         })
     }
 
-    //updateProfileData={this.updateWithoutSave}
-    //saveProfileData={this.updateAndSaveData}
-
 
     RenderTableWithData() {
         let data = this.state.profileData.languages;
