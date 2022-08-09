@@ -36,14 +36,8 @@ export default class Language extends React.Component {
     openEdit() {
         const details = Object.assign({}, this.props.details)
         this.setState({ showEditSection: true, newContact: details })
-        /*this.setState({ showEditSection: true })*/
     }
 
-    /*handleChange(e) {
-        this.setState({
-            newContact: e.target.value
-        })
-    }*/
 
     handleChange(event) {
         const data = Object.assign({}, this.state.newContact);
@@ -54,7 +48,6 @@ export default class Language extends React.Component {
     }
 
     saveDetails() {
-        console.log(this.props.componentId)
         console.log(this.state.newContact)
         const data = Object.assign({}, this.state.newContact)
         this.props.controlFunc(data)
@@ -72,14 +65,14 @@ export default class Language extends React.Component {
                             type="text"
                             placeholder="Add Language"
                             name="Name"
-                            value={langInput || ''}
+                            value={langInput}
                             onChange={this.handleChange}
                         />
                     </div>
 
                     <div className="five wide field">
 
-                        <select className="ui right labeled dropdown" placeholder="Level" value={selectedItem || ''} name="Level" onChange={this.handleChange}>
+                        <select className="ui right labeled dropdown" placeholder="Level" value={selectedItem} name="Level" onChange={this.handleChange}>
                             <option value="">Language Level</option>
                             <option>Basic</option>
                             <option>Conversational</option>

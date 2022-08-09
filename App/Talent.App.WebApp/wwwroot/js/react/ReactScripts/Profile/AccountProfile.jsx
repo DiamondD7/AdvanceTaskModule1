@@ -162,8 +162,6 @@ export default class AccountProfile extends React.Component {
             }
         })
     }
-
-    //hhh
     RenderTableWithData() {
         let data = this.state.profileData.languages;
         {
@@ -244,7 +242,6 @@ export default class AccountProfile extends React.Component {
                                             />
                                         </FormItemWrapper>
 
-                                        {/*{this.getTable}*/}
                                         <Language
                                             details={this.state.profileData.languages}
                                             controlFunc={this.updateArrays}
