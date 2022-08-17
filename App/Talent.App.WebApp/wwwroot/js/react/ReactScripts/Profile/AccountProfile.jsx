@@ -61,6 +61,7 @@ export default class AccountProfile extends React.Component {
         this.updateForComponentId = this.updateForComponentId.bind(this);
         this.updateForNewValues = this.updateForNewValues.bind(this);
         this.saveProfile = this.saveProfile.bind(this);
+        this.addLanguage = this.addLanguage.bind(this);
         this.loadData = this.loadData.bind(this);
         this.init = this.init.bind(this);
     };
@@ -108,10 +109,10 @@ export default class AccountProfile extends React.Component {
     }
 
     updateArrays(newValues) {
-        let newProfile = Object.assign({}, this.state.profileData, ...newValues)
+        let newProfile = Object.assign(this.state.profileData.languages, [...this.state.profileData.languages, newValues])
         this.setState({
-            profileData: newProfile
-        }, this.saveProfile)
+            profileData: { languages: newProfile }
+        }, this.addLanguage)
     }
 
     //updates component's state and saves data
@@ -122,7 +123,7 @@ export default class AccountProfile extends React.Component {
         }, this.saveProfile)
     }
 
-    updateForComponentId(componentId, newValues) {
+    updateForComponentId(newValues) {
         this.updateAndSaveData(newValues)
     }
 
@@ -146,6 +147,36 @@ export default class AccountProfile extends React.Component {
             data: JSON.stringify(this.state.profileData),
             success: function (res) {
                 console.log(res)
+                if (res.success == true) {
+                    TalentUtil.notification.show("Profile updated sucessfully", "success", null, null)
+                } else {
+                    console.log(res.state);
+                    TalentUtil.notification.show("Profile did not update successfully", "error", null, null)
+                }
+
+            }.bind(this),
+            error: function (res, a, b) {
+                console.log(res)
+                console.log(a)
+                console.log(b)
+            }
+        })
+    }
+
+
+    addLanguage() {
+        var cookies = Cookies.get('talentAuthToken');
+        $.ajax({
+            url: 'http://localhost:60290/profile/profile/addLanguage',
+            headers: {
+                'Authorization': 'Bearer ' + cookies,
+                'Content-Type': 'application/json'
+            },
+            type: "POST",
+            dataType: "json",
+            data: JSON.stringify(this.state.profileData.languages),
+            success: function (res) {
+                console.log(res)
                 console.log("this is the languages: ", this.state.profileData.languages);
                 if (res.success == true) {
                     TalentUtil.notification.show("Profile updated sucessfully", "success", null, null)
@@ -162,24 +193,7 @@ export default class AccountProfile extends React.Component {
             }
         })
     }
-    RenderTableWithData() {
-        let data = this.state.profileData.languages;
-        {
-            data.map((item) => {
-                return (
 
-                    <React.Fragment>
-                        <tr key={item.Id}>
-                            <td>{item.Name}</td>
-                            <td>{item.Level}</td>
-                            <td></td>
-                        </tr>
-                    </React.Fragment>
-
-                )
-            })
-        }
-    }
 
     render() {
         const profile = {
@@ -245,7 +259,6 @@ export default class AccountProfile extends React.Component {
                                         <Language
                                             details={this.state.profileData.languages}
                                             controlFunc={this.updateArrays}
-                                            data={this.RenderTableWithData()}
                                         />
 
                                     </div>

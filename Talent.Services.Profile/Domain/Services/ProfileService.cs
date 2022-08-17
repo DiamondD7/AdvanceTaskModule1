@@ -43,7 +43,7 @@ namespace Talent.Services.Profile.Domain.Services
             _fileService = fileService;
         }
 
-        public async Task<bool> AddNewLanguage(AddLanguageViewModel language)
+        public bool AddNewLanguage(AddLanguageViewModel language)
         {
             //Your code here;
             //UserLanguage addLang = null;
@@ -59,7 +59,7 @@ namespace Talent.Services.Profile.Domain.Services
                     LanguageLevel = language.Level,
                     IsDeleted = false
                 };
-                await _userLanguageRepository.Add(addLang);
+                _userLanguageRepository.Add(addLang);
                 return true;
                 //addLang.Add(languages);
             }
@@ -121,14 +121,13 @@ namespace Talent.Services.Profile.Domain.Services
         public async Task<bool> UpdateTalentProfile(TalentProfileViewModel model, string updaterId)
         {
             //Your code here;
-            string strnull = "stringNULL";
 
             try
             {
                 if (model.Id != null)
                 {
                     User existingUser = (await _userRepository.GetByIdAsync(model.Id));
-                    existingUser.Phone = model.Phone == null ? strnull : model.Phone;
+                    existingUser.Phone = model.Phone;
                     existingUser.FirstName = model.FirstName;
                     existingUser.LastName = model.LastName;
                     existingUser.MiddleName = model.MiddleName;

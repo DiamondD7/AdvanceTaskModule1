@@ -48,8 +48,8 @@ export default class Language extends React.Component {
     }
 
     saveDetails() {
-        console.log(this.state.newContact)
-        const data = Object.assign({}, this.state.newContact)
+        console.log("this is the new contact in saveDetails: ", this.state.newContact);
+        const data = Object.assign({}, { Name: this.state.newContact.Name, Level: this.state.newContact.Level })
         this.props.controlFunc(data)
         this.closeEdit()
     }
@@ -111,7 +111,13 @@ export default class Language extends React.Component {
                     </thead>
 
                     <tbody>
-                        {this.props.data}
+                        {this.props.details.map((items, index) =>
+                            <tr key={index}>
+                                <td>{items.Name == null ? "NULL" : items.Name}</td>
+                                <td>{items.Level == null ? "NULL" : items.Level}</td>
+                                <td></td>
+                            </tr>
+                            )}
                     </tbody>
                 </table>
             </FormItemWrapper>

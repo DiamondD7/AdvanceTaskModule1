@@ -146,7 +146,15 @@ namespace Talent.Services.Profile.Controllers
         public ActionResult AddLanguage([FromBody] AddLanguageViewModel language)
         {
             //Your code here;
-            throw new NotImplementedException();
+            if (ModelState.IsValid)
+            {
+                if (_profileService.AddNewLanguage(language))
+                {
+                    return Json(new { Success = true });
+                }
+            }
+            return Json(new { Success = false });
+            //throw new NotImplementedException();
         }
 
         [HttpPost("updateLanguage")]
