@@ -8,25 +8,20 @@ import FormItemWrapper from '../Form/FormItemWrapper.jsx';
 export default class Language extends React.Component {
     constructor(props) {
         super(props);
-                const details = this.props.details ?
-                    Object.assign({}, props.details)
-                    : {
-                        name:"",
-                        level:""
-                    }
 
         this.state = {
             showEditSection: false,
-            newContact: details,
-            load:[]
-
+            name: "",
+            level: "",
+            id: "",
+            currentUserId:"",
         }
 
         this.renderEdit = this.renderEdit.bind(this);
         this.closeEdit = this.closeEdit.bind(this);
         this.openEdit = this.openEdit.bind(this);
         this.handleChange = this.handleChange.bind(this);
-        this.saveDetails = this.saveDetails.bind(this);
+        /*this.saveDetails = this.saveDetails.bind(this);*/
         this.addLanguage = this.addLanguage.bind(this);
     }
 
@@ -36,25 +31,30 @@ export default class Language extends React.Component {
     }
 
     openEdit() {
-        const details = Object.assign({}, this.props.details)
-        this.setState({ showEditSection: true, newContact: details })
+        /*const details = Object.assign({}, this.props.details)*/
+        this.setState({ showEditSection: true, name: this.props.details.name, level: this.props.details.level, id: this.props.details.id, currentUserId: this.props.details.currentUserId })
     }
 
 
     handleChange(event) {
-        const data = Object.assign({}, this.state.newContact);
+        if (event.target.name == "name") {
+            this.setState({ name: event.target.value })
+        } else {
+            this.setState({ level: event.target.value })
+        }
+        /*const data = Object.assign({}, this.state.newContact);
         data[event.target.name] = event.target.value;
         this.setState({
             newContact: data
-        })
+        })*/
     }
 
-    saveDetails() {
-        console.log("this is the new contact in saveDetails: ", this.state.newContact);
-        const data = Object.assign({}, { Name: this.state.newContact.name, Level: this.state.newContact.evel })
-        this.props.controlFunc(data)
-        this.closeEdit()
-    }
+    /*saveDetails() {
+        *//*console.log("this is the new contact in saveDetails: ", this.state.newContact);
+const data = Object.assign({}, { Name: this.state.newContact.name, Level: this.state.newContact.evel })
+this.props.controlFunc(data)
+this.closeEdit()*//*
+}*/
 
     addLanguage() {
         var cookies = Cookies.get('talentAuthToken');
@@ -66,12 +66,15 @@ export default class Language extends React.Component {
             },
             type: "POST",
             dataType: "json",
-            data: JSON.stringify(this.state.newContact.name, this.state.newContact.level),
+            data: JSON.stringify({ name: this.state.name, level: this.state.level, id: this.state.id, currentUserId: this.state.currentUserId }),
             success: function (res) {
-                console.log(res)
-                console.log("this is the name: ", this.state.newContact.name);
-                console.log("this is the level: ", this.state.newContact.level);
+                console.log("mm", res.data);
+                console.log("this is the name: ", this.state.name);
+                console.log("this is the level: ", this.state.level);
+                console.log("this is the id: ", this.state.id);
                 if (res.success == true) {
+                    this.props.controlFunc(res.data)
+                    this.closeEdit();
                     TalentUtil.notification.show("Profile updated sucessfully", "success", null, null)
                 } else {
                     console.log(res.state);
@@ -88,11 +91,11 @@ export default class Language extends React.Component {
     }
 
     renderEdit() {
-        let selectedItem = this.state.newContact.level;
-        let langInput = this.state.newContact.name;
+        let selectedItem = this.state.level;
+        let langInput = this.state.name;
         return (
             <div className="sixteen wide column">
-                {/*<div className="fields">*/}
+                <div className="fields">
                     <div className="five wide field">
                         <input
                             type="text"
@@ -114,9 +117,9 @@ export default class Language extends React.Component {
                         </select>
                     </div>
 
-                    <button type="button" className="ui teal button" onClick={this.saveDetails}>Save</button>
+                    <button type="button" className="ui teal button" onClick={this.addLanguage}>Save</button>
                     <button type="button" className="ui button" onClick={this.closeEdit}>Cancel</button>
-                {/*</div>*/}
+                    </div>
             </div>
         )
     }
@@ -146,11 +149,11 @@ export default class Language extends React.Component {
                     <tbody>
                         {this.props.details.map((items, index) =>
                             <tr key={index}>
-                                <td>{items.Name !== null ? items.Name : "NULL"}</td>
-                                <td>{items.Level !== null ? items.Level : "NULL"}</td>
+                                <td>{items.name === null ? "NULL" : items.name}</td>
+                                <td>{items.level === null ? "NULL" : items.level}</td>
                                 <td></td>
                             </tr>
-                            )}
+                        )}
                     </tbody>
                 </table>
             </FormItemWrapper>

@@ -102,7 +102,7 @@ export class IndividualDetailSection extends Component {
                     inputType="text"
                     label="Phone number"
                     name="phone"
-                    value={this.state.newContact.phone || ''}
+                    value={this.state.newContact.phone}
                     controlFunc={this.handleChange}
                     maxLength={12}
                     placeholder="Enter a phone number"

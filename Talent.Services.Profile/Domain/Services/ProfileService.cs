@@ -46,14 +46,15 @@ namespace Talent.Services.Profile.Domain.Services
         public bool AddNewLanguage(AddLanguageViewModel language)
         {
             //Your code here;
-            if(language.Id == null)
+            if (language.Id == null)
             {
                 UserLanguage addLang = new UserLanguage();
                 addLang.Language = language.Name;
-                addLang.Id = language.Id;
+                addLang.Id = ObjectId.GenerateNewId().ToString();
                 addLang.LanguageLevel = language.Level;
 
                 _userLanguageRepository.Add(addLang);
+
                 return true;
             }
             return false;
@@ -135,7 +136,7 @@ namespace Talent.Services.Profile.Domain.Services
                     existingUser.UpdatedOn = DateTime.Now;
 
 
-
+                    
                     /*var newLang = new List<UserLanguage>();
                     foreach (var item in model.Languages)
                     {
