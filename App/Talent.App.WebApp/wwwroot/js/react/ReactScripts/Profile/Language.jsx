@@ -11,13 +11,14 @@ export default class Language extends React.Component {
                 const details = this.props.details ?
                     Object.assign({}, props.details)
                     : {
-                        Name: "",
-                        Level:""
+                        name:"",
+                        level:""
                     }
 
         this.state = {
             showEditSection: false,
             newContact: details,
+            load:[]
 
         }
 
@@ -26,6 +27,7 @@ export default class Language extends React.Component {
         this.openEdit = this.openEdit.bind(this);
         this.handleChange = this.handleChange.bind(this);
         this.saveDetails = this.saveDetails.bind(this);
+        this.addLanguage = this.addLanguage.bind(this);
     }
 
 
@@ -49,30 +51,61 @@ export default class Language extends React.Component {
 
     saveDetails() {
         console.log("this is the new contact in saveDetails: ", this.state.newContact);
-        const data = Object.assign({}, { Name: this.state.newContact.Name, Level: this.state.newContact.Level })
+        const data = Object.assign({}, { Name: this.state.newContact.name, Level: this.state.newContact.evel })
         this.props.controlFunc(data)
         this.closeEdit()
     }
 
+    addLanguage() {
+        var cookies = Cookies.get('talentAuthToken');
+        $.ajax({
+            url: 'http://localhost:60290/profile/profile/addLanguage',
+            headers: {
+                'Authorization': 'Bearer ' + cookies,
+                'Content-Type': 'application/json'
+            },
+            type: "POST",
+            dataType: "json",
+            data: JSON.stringify(this.state.newContact.name, this.state.newContact.level),
+            success: function (res) {
+                console.log(res)
+                console.log("this is the name: ", this.state.newContact.name);
+                console.log("this is the level: ", this.state.newContact.level);
+                if (res.success == true) {
+                    TalentUtil.notification.show("Profile updated sucessfully", "success", null, null)
+                } else {
+                    console.log(res.state);
+                    TalentUtil.notification.show("Profile did not update successfully", "error", null, null)
+                }
+
+            }.bind(this),
+            error: function (res, a, b) {
+                console.log(res)
+                console.log(a)
+                console.log(b)
+            }
+        })
+    }
+
     renderEdit() {
-        const selectedItem = this.state.newContact.Level;
-        const langInput = this.state.newContact.Name;
+        let selectedItem = this.state.newContact.level;
+        let langInput = this.state.newContact.name;
         return (
             <div className="sixteen wide column">
-                <div className="fields">
+                {/*<div className="fields">*/}
                     <div className="five wide field">
                         <input
                             type="text"
                             placeholder="Add Language"
-                            name="Name"
-                            value={langInput}
+                            name="name"
+                            value={langInput || ''}
                             onChange={this.handleChange}
                         />
                     </div>
 
                     <div className="five wide field">
 
-                        <select className="ui right labeled dropdown" placeholder="Level" value={selectedItem} name="Level" onChange={this.handleChange}>
+                        <select className="ui right labeled dropdown" placeholder="Level" value={selectedItem || ''} name="level" onChange={this.handleChange}>
                             <option value="">Language Level</option>
                             <option>Basic</option>
                             <option>Conversational</option>
@@ -83,7 +116,7 @@ export default class Language extends React.Component {
 
                     <button type="button" className="ui teal button" onClick={this.saveDetails}>Save</button>
                     <button type="button" className="ui button" onClick={this.closeEdit}>Cancel</button>
-                </div>
+                {/*</div>*/}
             </div>
         )
     }
@@ -113,8 +146,8 @@ export default class Language extends React.Component {
                     <tbody>
                         {this.props.details.map((items, index) =>
                             <tr key={index}>
-                                <td>{items.Name == null ? "NULL" : items.Name}</td>
-                                <td>{items.Level == null ? "NULL" : items.Level}</td>
+                                <td>{items.Name !== null ? items.Name : "NULL"}</td>
+                                <td>{items.Level !== null ? items.Level : "NULL"}</td>
                                 <td></td>
                             </tr>
                             )}

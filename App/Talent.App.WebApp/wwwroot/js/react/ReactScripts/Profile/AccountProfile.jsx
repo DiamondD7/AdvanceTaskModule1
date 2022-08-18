@@ -56,13 +56,14 @@ export default class AccountProfile extends React.Component {
         }
 
         this.updateWithoutSave = this.updateWithoutSave.bind(this);
-        this.updateArrays = this.updateArrays.bind(this);
+        /*this.updateArrays = this.updateArrays.bind(this);*/
         this.updateAndSaveData = this.updateAndSaveData.bind(this);
         this.updateForComponentId = this.updateForComponentId.bind(this);
         this.updateForNewValues = this.updateForNewValues.bind(this);
         this.saveProfile = this.saveProfile.bind(this);
-        this.addLanguage = this.addLanguage.bind(this);
+        /*this.addLanguage = this.addLanguage.bind(this);*/
         this.loadData = this.loadData.bind(this);
+        /*this.loadLanguages = this.loadLanguages.bind(this);*/
         this.init = this.init.bind(this);
     };
 
@@ -75,6 +76,7 @@ export default class AccountProfile extends React.Component {
 
     componentDidMount() {
         this.loadData();
+        /*this.loadLanguages();*/
     }
 
     loadData() {
@@ -89,12 +91,13 @@ export default class AccountProfile extends React.Component {
             contentType: "application/json",
             dataType: "json",
             success: function (res) {
-                let profileData = null;
+                /*this.loadLanguages;*/
+/*                let profileData = null;
                 if (res.data) {
                     profileData = res.data;
                     console.log("profdata", profileData);
                     console.log("get languages:", profileData.languages)
-                }
+                }*/
                 this.updateWithoutSave(profileData)
             }.bind(this)
         })
@@ -108,12 +111,12 @@ export default class AccountProfile extends React.Component {
         })
     }
 
-    updateArrays(newValues) {
+    /*updateArrays(newValues) {
         let newProfile = Object.assign(this.state.profileData.languages, [...this.state.profileData.languages, newValues])
         this.setState({
             profileData: { languages: newProfile }
         }, this.addLanguage)
-    }
+    }*/
 
     //updates component's state and saves data
     updateAndSaveData(newValues) {
@@ -144,6 +147,7 @@ export default class AccountProfile extends React.Component {
             },
             type: "POST",
             dataType: "json",
+            crossDomain: true,
             data: JSON.stringify(this.state.profileData),
             success: function (res) {
                 console.log(res)
@@ -164,35 +168,24 @@ export default class AccountProfile extends React.Component {
     }
 
 
-    addLanguage() {
+    /*loadLanguages() {
         var cookies = Cookies.get('talentAuthToken');
         $.ajax({
-            url: 'http://localhost:60290/profile/profile/addLanguage',
+            url: 'http://localhost:60290/profile/profile/getLanguage',
             headers: {
                 'Authorization': 'Bearer ' + cookies,
                 'Content-Type': 'application/json'
             },
-            type: "POST",
+            type: 'GET',
+            contentType: "application/json",
             dataType: "json",
-            data: JSON.stringify(this.state.profileData.languages),
             success: function (res) {
-                console.log(res)
-                console.log("this is the languages: ", this.state.profileData.languages);
-                if (res.success == true) {
-                    TalentUtil.notification.show("Profile updated sucessfully", "success", null, null)
-                } else {
-                    console.log(res.state);
-                    TalentUtil.notification.show("Profile did not update successfully", "error", null, null)
-                }
-
-            }.bind(this),
-            error: function (res, a, b) {
-                console.log(res)
-                console.log(a)
-                console.log(b)
-            }
+                console.log("This is the getLanguage", this.state.profileData.languages);
+                this.updateWithoutSave(this.state.profileData.languages)
+            }.bind(this)
         })
-    }
+        this.init()
+    }*/
 
 
     render() {
