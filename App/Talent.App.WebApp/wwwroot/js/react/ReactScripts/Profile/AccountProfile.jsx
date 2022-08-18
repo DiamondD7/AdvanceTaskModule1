@@ -113,9 +113,10 @@ export default class AccountProfile extends React.Component {
 
     updateArrays(newValues) {
         let newProfile = Object.assign(this.state.profileData.languages, [...this.state.profileData.languages, newValues])
-        this.setState({
+        this.updateAndSaveData(newProfile)
+        /*this.setState({
             profileData: { languages: newProfile }
-        }, this.saveProfile)
+        }, this.saveProfile)*/
     }
 
     //updates component's state and saves data

@@ -303,7 +303,7 @@ export class Nationality extends React.Component {
     saveContact() {
         console.log(this.state.newContact.nationality)
         const data = Object.assign({}, this.state.newContact)
-        this.props.controlFunc(data)
+        this.props.controlFunc(this.props.componentId, data)
         this.closeEdit()
     }
 

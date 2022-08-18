@@ -14,7 +14,7 @@ export default class Language extends React.Component {
             name: "",
             level: "",
             id: "",
-            currentUserId:"",
+            currentUserId: "",
         }
 
         this.renderEdit = this.renderEdit.bind(this);
@@ -54,7 +54,7 @@ export default class Language extends React.Component {
 const data = Object.assign({}, { Name: this.state.newContact.name, Level: this.state.newContact.evel })
 this.props.controlFunc(data)
 this.closeEdit()*//*
-}*/
+    }*/
 
     addLanguage() {
         var cookies = Cookies.get('talentAuthToken');
@@ -68,7 +68,7 @@ this.closeEdit()*//*
             dataType: "json",
             data: JSON.stringify({ name: this.state.name, level: this.state.level, id: this.state.id, currentUserId: this.state.currentUserId }),
             success: function (res) {
-                console.log("mm", res.data);
+                console.log("added language", res.data);
                 console.log("this is the name: ", this.state.name);
                 console.log("this is the level: ", this.state.level);
                 console.log("this is the id: ", this.state.id);
@@ -119,7 +119,7 @@ this.closeEdit()*//*
 
                     <button type="button" className="ui teal button" onClick={this.addLanguage}>Save</button>
                     <button type="button" className="ui button" onClick={this.closeEdit}>Cancel</button>
-                    </div>
+                </div>
             </div>
         )
     }
