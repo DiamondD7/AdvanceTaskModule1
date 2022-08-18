@@ -61,7 +61,9 @@ export default class AccountProfile extends React.Component {
         this.updateForComponentId = this.updateForComponentId.bind(this);
         this.updateForNewValues = this.updateForNewValues.bind(this);
         this.saveProfile = this.saveProfile.bind(this);
+        /*this.addLanguage = this.addLanguage.bind(this);*/
         this.loadData = this.loadData.bind(this);
+        /*this.loadLanguages = this.loadLanguages.bind(this);*/
         this.init = this.init.bind(this);
     };
 
@@ -74,6 +76,7 @@ export default class AccountProfile extends React.Component {
 
     componentDidMount() {
         this.loadData();
+        /*this.loadLanguages();*/
     }
 
     loadData() {
@@ -88,13 +91,14 @@ export default class AccountProfile extends React.Component {
             contentType: "application/json",
             dataType: "json",
             success: function (res) {
-                let profileData = null;
+                /*this.loadLanguages;*/
+                /*let profileData = null;
                 if (res.data) {
                     profileData = res.data;
                     console.log("profdata", profileData);
-                    console.log("get languages:", profileData.languages)
-                }
-                this.updateWithoutSave(profileData)
+                    *//*console.log("get languages:", profileData.languages)*//*
+                }*/
+                this.updateWithoutSave(res.data)
             }.bind(this)
         })
         this.init()
@@ -108,9 +112,9 @@ export default class AccountProfile extends React.Component {
     }
 
     updateArrays(newValues) {
-        let newProfile = Object.assign({}, this.state.profileData, ...newValues)
+        let newProfile = Object.assign(this.state.profileData.languages, [...this.state.profileData.languages, newValues])
         this.setState({
-            profileData: newProfile
+            profileData: { languages: newProfile }
         }, this.saveProfile)
     }
 
@@ -122,8 +126,9 @@ export default class AccountProfile extends React.Component {
         }, this.saveProfile)
     }
 
-    updateForComponentId(componentId, newValues) {
+    updateForComponentId(componentId,newValues) {
         this.updateAndSaveData(newValues)
+        console.log("new one is ", newValues);
     }
 
     updateForNewValues(componentId, newValues) {
@@ -146,7 +151,6 @@ export default class AccountProfile extends React.Component {
             data: JSON.stringify(this.state.profileData),
             success: function (res) {
                 console.log(res)
-                console.log("this is the languages: ", this.state.profileData.languages);
                 if (res.success == true) {
                     TalentUtil.notification.show("Profile updated sucessfully", "success", null, null)
                 } else {
@@ -164,24 +168,25 @@ export default class AccountProfile extends React.Component {
     }
 
 
-    RenderTableWithData() {
-        let data = this.state.profileData.languages;
-        {
-            data.map((item) => {
-                return (
+    /*loadLanguages() {
+        var cookies = Cookies.get('talentAuthToken');
+        $.ajax({
+            url: 'http://localhost:60290/profile/profile/getLanguage',
+            headers: {
+                'Authorization': 'Bearer ' + cookies,
+                'Content-Type': 'application/json'
+            },
+            type: 'GET',
+            contentType: "application/json",
+            dataType: "json",
+            success: function (res) {
+                console.log("This is the getLanguage", this.state.profileData.languages);
+                this.updateWithoutSave(this.state.profileData.languages)
+            }.bind(this)
+        })
+        this.init()
+    }*/
 
-                    <React.Fragment>
-                        <tr key={item.Id}>
-                            <td>{item.Name}</td>
-                            <td>{item.Level}</td>
-                            <td></td>
-                        </tr>
-                    </React.Fragment>
-
-                )
-            })
-        }
-    }
 
     render() {
         const profile = {
@@ -191,7 +196,7 @@ export default class AccountProfile extends React.Component {
             phone: this.state.profileData.phone
         }
 
-
+        console.log("THIS IS THE LANGUAGE: ", this.state.profileData.languages);
         return (
             <BodyWrapper reload={this.loadData} loaderData={this.state.loaderData}>
                 <section className="page-body">
@@ -222,6 +227,7 @@ export default class AccountProfile extends React.Component {
                                             <IndividualDetailSection
                                                 controlFunc={this.updateForComponentId}
                                                 details={profile}
+                                                componentId="contactDetails"
                                             />
                                         </FormItemWrapper>
 
@@ -244,11 +250,9 @@ export default class AccountProfile extends React.Component {
                                             />
                                         </FormItemWrapper>
 
-                                        {/*{this.getTable}*/}
                                         <Language
                                             details={this.state.profileData.languages}
                                             controlFunc={this.updateArrays}
-                                            data={this.RenderTableWithData()}
                                         />
 
                                     </div>

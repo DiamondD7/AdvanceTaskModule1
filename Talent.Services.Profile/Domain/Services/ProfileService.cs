@@ -43,36 +43,21 @@ namespace Talent.Services.Profile.Domain.Services
             _fileService = fileService;
         }
 
-        public async Task<bool> AddNewLanguage(AddLanguageViewModel language)
+        public bool AddNewLanguage(AddLanguageViewModel language)
         {
             //Your code here;
-            //UserLanguage addLang = null;
-            // var addLang = new List<UserLanguage>();
-            //var languages = addLang.Id.SingleOrDefault(x => x.Id == language.Id);
             if (language.Id == null)
             {
-                //UserLanguage addLang = new UserLanguage();
-                UserLanguage addLang = new UserLanguage
-                {
-                    Id = ObjectId.GenerateNewId().ToString(),
-                    Language = language.Name,
-                    LanguageLevel = language.Level,
-                    IsDeleted = false
-                };
-                await _userLanguageRepository.Add(addLang);
+                UserLanguage addLang = new UserLanguage();
+                addLang.Language = language.Name;
+                addLang.Id = ObjectId.GenerateNewId().ToString();
+                addLang.LanguageLevel = language.Level;
+
+                _userLanguageRepository.Add(addLang);
+
                 return true;
-                //addLang.Add(languages);
             }
             return false;
-            
-
-            /*TalentProfileViewModel model = new TalentProfileViewModel();
-            if (language.Id == null)
-            {
-                await UpdateTalentProfile(model, language.Id);
-                return true;
-            }
-            return false;*/
 
             //throw new NotImplementedException();
         }
@@ -121,14 +106,13 @@ namespace Talent.Services.Profile.Domain.Services
         public async Task<bool> UpdateTalentProfile(TalentProfileViewModel model, string updaterId)
         {
             //Your code here;
-            string strnull = "stringNULL";
 
             try
             {
                 if (model.Id != null)
                 {
                     User existingUser = (await _userRepository.GetByIdAsync(model.Id));
-                    existingUser.Phone = model.Phone == null ? strnull : model.Phone;
+                    existingUser.Phone = model.Phone;
                     existingUser.FirstName = model.FirstName;
                     existingUser.LastName = model.LastName;
                     existingUser.MiddleName = model.MiddleName;
@@ -152,8 +136,8 @@ namespace Talent.Services.Profile.Domain.Services
                     existingUser.UpdatedOn = DateTime.Now;
 
 
-
-                    var newLang = new List<UserLanguage>();
+                    
+                    /*var newLang = new List<UserLanguage>();
                     foreach (var item in model.Languages)
                     {
                         var languages = existingUser.Languages.SingleOrDefault(x => x.Id == item.Id);
@@ -168,7 +152,7 @@ namespace Talent.Services.Profile.Domain.Services
                         UpdateLanguageFromView(item, languages);
                         newLang.Add(languages);
                     }
-                    existingUser.Languages = newLang;
+                    existingUser.Languages = newLang;*/
 
                     await _userRepository.Update(existingUser);
 
@@ -442,7 +426,7 @@ namespace Talent.Services.Profile.Domain.Services
 
         protected void UpdateLanguageFromView(AddLanguageViewModel model, UserLanguage original)
         {
-            original.Id = model.Id;
+/*            original.Id = model.Id;*/
             original.LanguageLevel = model.Level;
             original.Language = model.Name;
         }
