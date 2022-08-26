@@ -3,7 +3,7 @@ import React from 'react';
 import Cookies from 'js-cookie';
 import { ChildSingleInput } from '../Form/SingleInput.jsx';
 import FormItemWrapper from '../Form/FormItemWrapper.jsx';
-
+import { Button, Modal } from "semantic-ui-react";
 
 export default class Language extends React.Component {
     constructor(props) {
@@ -23,6 +23,8 @@ export default class Language extends React.Component {
         this.handleChange = this.handleChange.bind(this);
         /*this.saveDetails = this.saveDetails.bind(this);*/
         this.addLanguage = this.addLanguage.bind(this);
+        this.delLanguage = this.delLanguage.bind(this);
+        /*this.deleteClick = this.deleteClick.bind(this);*/
     }
 
 
@@ -54,7 +56,7 @@ export default class Language extends React.Component {
 const data = Object.assign({}, { Name: this.state.newContact.name, Level: this.state.newContact.evel })
 this.props.controlFunc(data)
 this.closeEdit()*//*
-    }*/
+        }*/
 
     addLanguage() {
         var cookies = Cookies.get('talentAuthToken');
@@ -66,12 +68,11 @@ this.closeEdit()*//*
             },
             type: "POST",
             dataType: "json",
-            data: JSON.stringify({ name: this.state.name, level: this.state.level, id: this.state.id, currentUserId: this.state.currentUserId }),
+            data: JSON.stringify({ name: this.state.name, level: this.state.level }),
             success: function (res) {
-                console.log("added language", res.data);
+                console.log("added language props", this.props.details);
                 console.log("this is the name: ", this.state.name);
                 console.log("this is the level: ", this.state.level);
-                console.log("this is the id: ", this.state.id);
                 if (res.success == true) {
                     this.props.controlFunc(res.data)
                     this.closeEdit();
@@ -89,6 +90,47 @@ this.closeEdit()*//*
             }
         })
     }
+
+    /*deleteClick(items) {
+        this.setState({
+            id: items.id,
+            name: items.name,
+            level: items.level
+        }, this.delLanguage(this.state.id))
+        
+    }*/
+
+    delLanguage(id) {
+        this.setState({id: id})
+        var cookies = Cookies.get('talentAuthToken');
+        $.ajax({
+            url: 'http://localhost:60290/profile/profile/deleteLanguage',
+            headers: {
+                'Authorization': 'Bearer ' + cookies,
+                'Content-Type': 'application/json'
+            },
+            type: "POST",
+            dataType: "json",
+            data: JSON.stringify(this.state.id),
+            success: function (res) {
+                console.log("this is the ID DELETION: ", this.staet.id);
+                if (res.success == true) {
+                    this.props.controlFunc(res.data)
+                    TalentUtil.notification.show("Profile updated sucessfully", "success", null, null)
+                } else {
+                    console.log(res.state);
+                    TalentUtil.notification.show("Profile did not update successfully", "error", null, null)
+                }
+
+            }.bind(this),
+            error: function (res, a, b) {
+                console.log(res)
+                console.log(a)
+                console.log(b)
+            }
+        })
+    }
+
 
     renderEdit() {
         let selectedItem = this.state.level;
@@ -127,15 +169,18 @@ this.closeEdit()*//*
 
 
     render() {
+
         return (
             <FormItemWrapper
                 title='Languages'
                 tooltip='Select languages that you speak'
             >
                 {this.state.showEditSection ? this.renderEdit() : ""}
+
                 <table className="ui table">
                     <thead className="full-width">
                         <tr>
+                            <th>Id</th>
                             <th>Language</th>
                             <th>Level</th>
                             <th>
@@ -147,11 +192,15 @@ this.closeEdit()*//*
                     </thead>
 
                     <tbody>
-                        {this.props.details.map((items, index) =>
+                        {this.props.details.map((items,index) =>
                             <tr key={index}>
+                                <td>{items.id}</td>
                                 <td>{items.name === null ? "NULL" : items.name}</td>
                                 <td>{items.level === null ? "NULL" : items.level}</td>
-                                <td></td>
+                                <td>
+                                    <button type="button" className="circular ui icon button"><i className="pencil alternate icon"></i></button>
+                                    <button type="button" className="circular ui icon button" onClick={()=>this.delLanguage(items.id)}><i className="trash alternate icon"></i></button>
+                                </td>
                             </tr>
                         )}
                     </tbody>

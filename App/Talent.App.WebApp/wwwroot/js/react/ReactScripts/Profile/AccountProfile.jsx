@@ -61,9 +61,7 @@ export default class AccountProfile extends React.Component {
         this.updateForComponentId = this.updateForComponentId.bind(this);
         this.updateForNewValues = this.updateForNewValues.bind(this);
         this.saveProfile = this.saveProfile.bind(this);
-        /*this.addLanguage = this.addLanguage.bind(this);*/
         this.loadData = this.loadData.bind(this);
-        /*this.loadLanguages = this.loadLanguages.bind(this);*/
         this.init = this.init.bind(this);
     };
 
@@ -76,7 +74,6 @@ export default class AccountProfile extends React.Component {
 
     componentDidMount() {
         this.loadData();
-        /*this.loadLanguages();*/
     }
 
     loadData() {
@@ -91,13 +88,14 @@ export default class AccountProfile extends React.Component {
             contentType: "application/json",
             dataType: "json",
             success: function (res) {
+                /*console.log("res", res);*/
                 /*this.loadLanguages;*/
-                /*let profileData = null;
+                let profileData = null;
                 if (res.data) {
                     profileData = res.data;
                     console.log("profdata", profileData);
-                    *//*console.log("get languages:", profileData.languages)*//*
-                }*/
+                    console.log("get languages:", profileData.languages)
+                }
                 this.updateWithoutSave(res.data)
             }.bind(this)
         })
@@ -113,7 +111,7 @@ export default class AccountProfile extends React.Component {
 
     updateArrays(newValues) {
         let newProfile = Object.assign(this.state.profileData.languages, [...this.state.profileData.languages, newValues])
-        this.updateAndSaveData(newProfile)
+        this.saveProfile();
         /*this.setState({
             profileData: { languages: newProfile }
         }, this.saveProfile)*/
@@ -141,6 +139,7 @@ export default class AccountProfile extends React.Component {
 
     saveProfile() {
         var cookies = Cookies.get('talentAuthToken');
+        console.log("this is the profdata in saveProfile", this.state.profileData);
         $.ajax({
             url: 'http://localhost:60290/profile/profile/updateTalentProfile',
             headers: {
@@ -151,7 +150,8 @@ export default class AccountProfile extends React.Component {
             dataType: "json",
             data: JSON.stringify(this.state.profileData),
             success: function (res) {
-                console.log(res)
+                console.log("this is the res", res.data);
+                this.loadData();
                 if (res.success == true) {
                     TalentUtil.notification.show("Profile updated sucessfully", "success", null, null)
                 } else {
@@ -168,27 +168,6 @@ export default class AccountProfile extends React.Component {
         })
     }
 
-
-    /*loadLanguages() {
-        var cookies = Cookies.get('talentAuthToken');
-        $.ajax({
-            url: 'http://localhost:60290/profile/profile/getLanguage',
-            headers: {
-                'Authorization': 'Bearer ' + cookies,
-                'Content-Type': 'application/json'
-            },
-            type: 'GET',
-            contentType: "application/json",
-            dataType: "json",
-            success: function (res) {
-                console.log("This is the getLanguage", this.state.profileData.languages);
-                this.updateWithoutSave(this.state.profileData.languages)
-            }.bind(this)
-        })
-        this.init()
-    }*/
-
-
     render() {
         const profile = {
             firstName: this.state.profileData.firstName,
@@ -196,7 +175,6 @@ export default class AccountProfile extends React.Component {
             email: this.state.profileData.email,
             phone: this.state.profileData.phone
         }
-
         console.log("THIS IS THE LANGUAGE: ", this.state.profileData.languages);
         return (
             <BodyWrapper reload={this.loadData} loaderData={this.state.loaderData}>

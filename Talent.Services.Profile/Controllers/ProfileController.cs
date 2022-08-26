@@ -139,6 +139,13 @@ namespace Talent.Services.Profile.Controllers
         {
             //Your code here;
 
+            /*var languageData =_userLanguageRepository.Collection.ToList();
+            return Json(new { data = languageData });*/
+
+            /*var userId = _userLanguageRepository.Collection.Select(x => x.UserId);
+            var languageData = await _userLanguageRepository.GetByIdAsync(userId);
+            return Json(new { data = languageData });*/
+
             throw new NotImplementedException();
         }
 
@@ -163,7 +170,15 @@ namespace Talent.Services.Profile.Controllers
         public async Task<ActionResult> UpdateLanguage([FromBody] AddLanguageViewModel language)
         {
             //Your code here;
-            throw new NotImplementedException();
+            if (ModelState.IsValid)
+            {
+                if (await _profileService.UpdateNewLanguage(language))
+                {
+                    return Json(new { Success = true });
+                }
+            }
+            return Json(new { Success = false });
+            //throw new NotImplementedException();
         }
 
         [HttpPost("deleteLanguage")]
@@ -171,7 +186,15 @@ namespace Talent.Services.Profile.Controllers
         public async Task<ActionResult> DeleteLanguage([FromBody] AddLanguageViewModel language)
         {
             //Your code here;
-            throw new NotImplementedException();
+            if (ModelState.IsValid)
+            {
+                if(await _profileService.DeleteLanguage(language))
+                {
+                    return Json(new { Success = true, data = language });
+                }
+            }
+            return Json(new { Success = false });
+            //throw new NotImplementedException();
         }
 
         [HttpGet("getSkill")]
@@ -194,7 +217,7 @@ namespace Talent.Services.Profile.Controllers
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "talent")]
         public async Task<IActionResult> UpdateSkill([FromBody]AddSkillViewModel skill)
         {
-            //Your code here;
+            //Your code here;  
             throw new NotImplementedException();
         }
 
