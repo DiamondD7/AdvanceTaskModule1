@@ -15,15 +15,20 @@ export default class Language extends React.Component {
             level: "",
             id: "",
             currentUserId: "",
+            showUpdateSection: false
         }
 
         this.renderEdit = this.renderEdit.bind(this);
         this.closeEdit = this.closeEdit.bind(this);
         this.openEdit = this.openEdit.bind(this);
+        this.openUpdate = this.openUpdate.bind(this);
+        this.closeUpdate = this.closeUpdate.bind(this);
         this.handleChange = this.handleChange.bind(this);
+        this.renderUpdate = this.renderUpdate.bind(this);
         /*this.saveDetails = this.saveDetails.bind(this);*/
         this.addLanguage = this.addLanguage.bind(this);
         this.delLanguage = this.delLanguage.bind(this);
+        this.updateLanguage = this.updateLanguage.bind(this);
         /*this.deleteClick = this.deleteClick.bind(this);*/
     }
 
@@ -37,6 +42,13 @@ export default class Language extends React.Component {
         this.setState({ showEditSection: true, name: this.props.details.name, level: this.props.details.level, id: this.props.details.id, currentUserId: this.props.details.currentUserId })
     }
 
+    openUpdate(items) {
+        this.setState({ showUpdateSection: true, name: items.name, level: items.level, id: items.id, currentUserId: items.currentUserId })
+    }
+
+    closeUpdate() {
+        this.setState({ showUpdateSection: false })
+    }
 
     handleChange(event) {
         if (event.target.name == "name") {
@@ -56,7 +68,7 @@ export default class Language extends React.Component {
 const data = Object.assign({}, { Name: this.state.newContact.name, Level: this.state.newContact.evel })
 this.props.controlFunc(data)
 this.closeEdit()*//*
-        }*/
+                                                                        }*/
 
     addLanguage() {
         var cookies = Cookies.get('talentAuthToken');
@@ -101,7 +113,7 @@ this.closeEdit()*//*
     }*/
 
     delLanguage(id) {
-        this.setState({id: id})
+        this.setState({ id: id })
         var cookies = Cookies.get('talentAuthToken');
         $.ajax({
             url: 'http://localhost:60290/profile/profile/deleteLanguage',
@@ -113,7 +125,7 @@ this.closeEdit()*//*
             dataType: "json",
             data: JSON.stringify(this.state.id),
             success: function (res) {
-                console.log("this is the ID DELETION: ", this.staet.id);
+                console.log("this is the ID DELETION: ", this.state.id);
                 if (res.success == true) {
                     this.props.controlFunc(res.data)
                     TalentUtil.notification.show("Profile updated sucessfully", "success", null, null)
@@ -131,6 +143,35 @@ this.closeEdit()*//*
         })
     }
 
+    updateLanguage() {
+        var cookies = Cookies.get('talentAuthToken');
+        $.ajax({
+            url: 'http://localhost:60290/profile/profile/updateLanguage',
+            headers: {
+                'Authorization': 'Bearer ' + cookies,
+                'Content-Type': 'application/json'
+            },
+            type: "POST",
+            dataType: "json",
+            data: JSON.stringify({ name: this.state.name, level: this.state.level, id: this.state.id }),
+            success: function (res) {
+                if (res.success == true) {
+                    this.props.controlFunc(res.data)
+                    console.log("this is the error data", this.state.name, this.state.level, this.state.id);
+                    TalentUtil.notification.show("Profile updated sucessfully", "success", null, null)
+                } else {
+                    console.log(res.state);
+                    TalentUtil.notification.show("Profile did not update successfully", "error", null, null)
+                }
+
+            }.bind(this),
+            error: function (res, a, b) {
+                console.log(res)
+                console.log(a)
+                console.log(b)
+            }
+        })
+    }
 
     renderEdit() {
         let selectedItem = this.state.level;
@@ -143,14 +184,14 @@ this.closeEdit()*//*
                             type="text"
                             placeholder="Add Language"
                             name="name"
-                            value={langInput || ''}
+                            value={langInput || ""}
                             onChange={this.handleChange}
                         />
                     </div>
 
                     <div className="five wide field">
 
-                        <select className="ui right labeled dropdown" placeholder="Level" value={selectedItem || ''} name="level" onChange={this.handleChange}>
+                        <select className="ui right labeled dropdown" placeholder="Level" value={selectedItem || ""} name="level" onChange={this.handleChange}>
                             <option value="">Language Level</option>
                             <option>Basic</option>
                             <option>Conversational</option>
@@ -166,16 +207,47 @@ this.closeEdit()*//*
         )
     }
 
+    renderUpdate() {
+        return (
+            <div className="sixteen wide column">
+                <div className="fields">
+                    <div className="five wide field">
+                        <input
+                            type="text"
+                            placeholder="Add Language"
+                            name="name"
+                            value={this.state.name || ''}
+                            onChange={this.handleChange}
+                        />
+                    </div>
 
+                    <div className="five wide field">
+
+                        <select className="ui right labeled dropdown" placeholder="Level" value={this.state.level || ''} name="level" onChange={this.handleChange}>
+                            <option value="">Language Level</option>
+                            <option>Basic</option>
+                            <option>Conversational</option>
+                            <option>Fluent</option>
+                            <option>Native/Bilingual</option>
+                        </select>
+                    </div>
+
+                    <button type="button" className="ui teal button" onClick={this.updateLanguage}>Update</button>
+                    <button type="button" className="ui button" onClick={this.closeUpdate}>Cancel</button>
+                </div>
+            </div>
+        )
+    }
 
     render() {
-
         return (
             <FormItemWrapper
                 title='Languages'
                 tooltip='Select languages that you speak'
             >
                 {this.state.showEditSection ? this.renderEdit() : ""}
+
+                {this.state.showUpdateSection ? this.renderUpdate() : ""}
 
                 <table className="ui table">
                     <thead className="full-width">
@@ -192,17 +264,17 @@ this.closeEdit()*//*
                     </thead>
 
                     <tbody>
-                        {this.props.details.map((items,index) =>
+
+                        {this.props.details.map((items, index) =>
                             <tr key={index}>
                                 <td>{items.id}</td>
                                 <td>{items.name === null ? "NULL" : items.name}</td>
                                 <td>{items.level === null ? "NULL" : items.level}</td>
                                 <td>
-                                    <button type="button" className="circular ui icon button"><i className="pencil alternate icon"></i></button>
-                                    <button type="button" className="circular ui icon button" onClick={()=>this.delLanguage(items.id)}><i className="trash alternate icon"></i></button>
+                                    <button type="button" className="circular ui icon button" onClick={() => this.openUpdate(items)}><i className="pencil alternate icon"></i></button>
+                                    <button type="button" className="circular ui icon button" onClick={() => this.delLanguage(items.id)}><i className="trash alternate icon"></i></button>
                                 </td>
-                            </tr>
-                        )}
+                            </tr>)}
                     </tbody>
                 </table>
             </FormItemWrapper>

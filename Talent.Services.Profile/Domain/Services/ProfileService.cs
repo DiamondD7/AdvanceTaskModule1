@@ -63,7 +63,20 @@ namespace Talent.Services.Profile.Domain.Services
 
         public async Task<bool> UpdateNewLanguage(AddLanguageViewModel model)
         {
-            try
+
+            if (model.Id != null)
+            {
+                UserLanguage addLang = new UserLanguage();
+                addLang.Language = model.Name;
+                addLang.LanguageLevel = model.Level;
+                addLang.UserId = model.CurrentUserId;
+                addLang.Id = model.Id;
+                await _userLanguageRepository.Update(addLang);
+                return true;
+            }
+            return false;
+
+            /*try
             {
                 User existingUser = (await _userRepository.GetByIdAsync(model.CurrentUserId));
                 var newLang = new List<UserLanguage>();
@@ -91,7 +104,7 @@ namespace Talent.Services.Profile.Domain.Services
             catch (MongoException e)
             {
                 return false;
-            }
+            }*/
         }
 
 
@@ -100,6 +113,9 @@ namespace Talent.Services.Profile.Domain.Services
             if (model.Id != null)
             {
                 UserLanguage delLang = new UserLanguage();
+                delLang.Id = model.Id;
+                delLang.Language = model.Name;
+                delLang.LanguageLevel = model.Level;
                 await _userLanguageRepository.Delete(delLang);
                 return true;
             }
@@ -159,11 +175,17 @@ namespace Talent.Services.Profile.Domain.Services
                     var newLang = new List<UserLanguage>();
                     foreach (var item in model.Languages)
                     {
+                        /*var languages = existingUser.Languages.Single(x => x.Id == item.Id);*/
+                        /*if (languages == null)
+                        {*/
+
                         var languages = new UserLanguage
                         {
                             Id = ObjectId.GenerateNewId().ToString(),
                             IsDeleted = false
                         };
+                        /*}*/
+
                         UpdateLanguageFromView(item, languages);
                         newLang.Add(languages);
                     }
@@ -484,7 +506,7 @@ namespace Talent.Services.Profile.Domain.Services
 
         protected void UpdateLanguageFromView(AddLanguageViewModel model, UserLanguage original)
         {
-            /*            original.Id = model.Id;*/
+            /*original.Id = model.Id;*/
             original.LanguageLevel = model.Level;
             original.Language = model.Name;
         }
