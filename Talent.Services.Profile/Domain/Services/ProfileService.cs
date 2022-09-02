@@ -83,15 +83,6 @@ namespace Talent.Services.Profile.Domain.Services
 
                 var languages = existingUser.Languages.SingleOrDefault(x => x.Id == model.Id);
 
-                if (languages == null)
-                {
-                    languages = new UserLanguage
-                    {
-                        Id = ObjectId.GenerateNewId().ToString(),
-                        IsDeleted = false
-                    };
-                }
-
                 UpdateLanguageFromView(model, languages);
                 newLang.Add(languages);
 
@@ -173,24 +164,24 @@ namespace Talent.Services.Profile.Domain.Services
                 if (model.Id != null)
                 {
                     var newLang = new List<UserLanguage>();
+                    User existingUser = (await _userRepository.GetByIdAsync(model.Id));
                     foreach (var item in model.Languages)
                     {
-                        /*var languages = existingUser.Languages.Single(x => x.Id == item.Id);*/
-                        /*if (languages == null)
-                        {*/
-
-                        var languages = new UserLanguage
+                        var languages = existingUser.Languages.SingleOrDefault(x => x.Id == item.Id);
+                        if (languages == null)
                         {
-                            Id = ObjectId.GenerateNewId().ToString(),
-                            IsDeleted = false
-                        };
-                        /*}*/
+
+                            languages = new UserLanguage
+                            {
+                                Id = ObjectId.GenerateNewId().ToString(),
+                                IsDeleted = false
+                            };
+                        }
 
                         UpdateLanguageFromView(item, languages);
                         newLang.Add(languages);
                     }
 
-                    User existingUser = (await _userRepository.GetByIdAsync(model.Id));
                     existingUser.Languages = newLang;
                     existingUser.Phone = model.Phone;
                     existingUser.FirstName = model.FirstName;

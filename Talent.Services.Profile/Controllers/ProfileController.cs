@@ -174,7 +174,7 @@ namespace Talent.Services.Profile.Controllers
             {
                 if (await _profileService.UpdateNewLanguage(language))
                 {
-                    return Json(new { Success = true, data = language });
+                    return Json(new { Success = true, data = language, id = language.Id });
                 }
             }
             return Json(new { Success = false });
