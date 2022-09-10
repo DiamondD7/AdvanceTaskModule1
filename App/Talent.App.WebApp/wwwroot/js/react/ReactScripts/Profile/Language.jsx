@@ -112,8 +112,7 @@ this.closeEdit()*//*
         
     }*/
 
-    delLanguage(id) {
-        this.setState({ id: id })
+    delLanguage() {
         var cookies = Cookies.get('talentAuthToken');
         $.ajax({
             url: 'http://localhost:60290/profile/profile/deleteLanguage',
@@ -123,9 +122,7 @@ this.closeEdit()*//*
             },
             type: "POST",
             dataType: "json",
-            data: JSON.stringify(this.state.id),
             success: function (res) {
-                console.log("this is the ID DELETION: ", this.state.id);
                 if (res.success == true) {
                     this.props.controlFunc(res.data)
                     TalentUtil.notification.show("Profile updated sucessfully", "success", null, null)
@@ -157,7 +154,6 @@ this.closeEdit()*//*
             success: function (res) {
                 if (res.success == true) {
                     this.props.controlFunc(res.data)
-                    console.log("this is the error data", this.state.name, this.state.level, this.state.id);
                     TalentUtil.notification.show("Profile updated sucessfully", "success", null, null)
                 } else {
                     console.log(res.state);
@@ -272,7 +268,7 @@ this.closeEdit()*//*
                                 <td>{items.level === null ? "NULL" : items.level}</td>
                                 <td>
                                     <button type="button" className="circular ui icon button" onClick={() => this.openUpdate(items)}><i className="pencil alternate icon"></i></button>
-                                    <button type="button" className="circular ui icon button" onClick={() => this.delLanguage(items.id)}><i className="trash alternate icon"></i></button>
+                                    <button type="button" className="circular ui icon button" onClick={this.delLanguage}><i className="trash alternate icon"></i></button>
                                 </td>
                             </tr>)}
                     </tbody>

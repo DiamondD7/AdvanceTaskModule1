@@ -188,7 +188,7 @@ namespace Talent.Services.Profile.Controllers
             //Your code here;
             if (ModelState.IsValid)
             {
-                if(await _profileService.DeleteLanguage(language))
+                if (await _profileService.DeleteLanguage(language))
                 {
                     return Json(new { Success = true, data = language });
                 }

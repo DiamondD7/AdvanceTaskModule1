@@ -66,12 +66,12 @@ namespace Talent.Services.Profile.Domain.Services
 
             if (model.Id != null)
             {
-                UserLanguage addLang = new UserLanguage();
-                addLang.Language = model.Name;
-                addLang.LanguageLevel = model.Level;
-                addLang.UserId = model.CurrentUserId;
-                addLang.Id = model.Id;
-                await _userLanguageRepository.Update(addLang);
+                var updateLang = new UserLanguage();
+                updateLang.Language = model.Name;
+                updateLang.LanguageLevel = model.Level;
+                updateLang.UserId = model.CurrentUserId;
+                updateLang.Id = model.Id;
+                await _userLanguageRepository.Update(updateLang);
                 return true;
             }
             return false;
@@ -168,17 +168,15 @@ namespace Talent.Services.Profile.Domain.Services
                     User existingUser = (await _userRepository.GetByIdAsync(model.Id));
                     foreach (var item in model.Languages)
                     {
-                        var languages = existingUser.Languages.SingleOrDefault(x => x.Id == item.Id);
+                        var languages = existingUser.Languages.FirstOrDefault(x => x.Id == item.Id);
                         if (languages == null)
                         {
-
                             languages = new UserLanguage
                             {
                                 Id = ObjectId.GenerateNewId().ToString(),
                                 IsDeleted = false
                             };
                         }
-
                         UpdateLanguageFromView(item, languages);
                         newLang.Add(languages);
                     }

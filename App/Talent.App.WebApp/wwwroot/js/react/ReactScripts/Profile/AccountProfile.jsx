@@ -110,7 +110,17 @@ export default class AccountProfile extends React.Component {
     }
 
     updateArrays(newValues) {
-        let newProfile = Object.assign(this.state.profileData.languages, [...this.state.profileData.languages, newValues])
+        console.log("this is the newvalues, ", newValues.id);
+        if (newValues.id === null) {
+            let newProfile = Object.assign(this.state.profileData.languages, [...this.state.profileData.languages, newValues])
+        }
+        else {
+            let updateProfile = Object.assign(this.state.profileData.languages, [...this.state.profileData.languages, newValues])
+            /*for (var i = 0; i <= this.state.profileData.languages; i++) {
+                if (this.state.profileData.languages[i].id === newValues.id) {
+                }
+            }*/
+        }
         this.saveProfile();
         /*this.setState({
             profileData: { languages: newProfile }
@@ -125,7 +135,7 @@ export default class AccountProfile extends React.Component {
         }, this.saveProfile)
     }
 
-    updateForComponentId(componentId,newValues) {
+    updateForComponentId(componentId, newValues) {
         this.updateAndSaveData(newValues)
         console.log("new one is ", newValues);
     }
