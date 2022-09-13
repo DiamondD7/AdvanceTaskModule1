@@ -181,7 +181,6 @@ namespace Talent.Services.Profile.Domain.Services
                 var updateExperience = new UserExperience();
                 updateExperience.Company = model.Company;
                 updateExperience.Position = model.Position;
-                updateExperience.Id = model.Id;
                 updateExperience.Responsibilities = model.Responsibilities;
                 updateExperience.Start = model.Start;
                 updateExperience.End = model.End;

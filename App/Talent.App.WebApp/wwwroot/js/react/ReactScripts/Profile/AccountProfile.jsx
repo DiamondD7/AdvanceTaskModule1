@@ -57,6 +57,7 @@ export default class AccountProfile extends React.Component {
 
         this.updateWithoutSave = this.updateWithoutSave.bind(this);
         this.updateArrays = this.updateArrays.bind(this);
+        this.updateExperienceArrays = this.updateExperienceArrays.bind(this);
         this.updateSkillArrays = this.updateSkillArrays.bind(this);
         this.updateAndSaveData = this.updateAndSaveData.bind(this);
         this.updateForComponentId = this.updateForComponentId.bind(this);
@@ -134,6 +135,16 @@ export default class AccountProfile extends React.Component {
         }
         else {
             let updateProfile = Object.assign(this.state.profileData.skills, [...this.state.profileData.skills, newValues])
+        }
+        this.saveProfile();
+    }
+
+    updateExperienceArrays(newValues) {
+        if (newValues.id === null) {
+            let newProfile = Object.assign(this.state.profileData.experience, [...this.state.profileData.experience, newValues])
+        }
+        else {
+            let updateProfile = Object.assign(this.state.profileData.experience, [...this.state.profileData.experience, newValues])
         }
         this.saveProfile();
     }
@@ -258,6 +269,11 @@ export default class AccountProfile extends React.Component {
                                         <Skill
                                             details={this.state.profileData.skills}
                                             controlFunc={this.updateSkillArrays}
+                                        />
+
+                                        <Experience
+                                            details={this.state.profileData.experience}
+                                            controlFunc={this.updateExperienceArrays}
                                         />
 
                                     </div>
