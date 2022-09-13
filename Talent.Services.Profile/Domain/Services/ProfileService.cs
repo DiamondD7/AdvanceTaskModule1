@@ -19,6 +19,8 @@ namespace Talent.Services.Profile.Domain.Services
     {
         private readonly IUserAppContext _userAppContext;
         IRepository<UserLanguage> _userLanguageRepository;
+        IRepository<UserSkill> _userSkillRepository;
+        IRepository<UserExperience> _userExperienceRepository;
         IRepository<User> _userRepository;
         IRepository<Employer> _employerRepository;
         IRepository<Job> _jobRepository;
@@ -28,6 +30,8 @@ namespace Talent.Services.Profile.Domain.Services
 
         public ProfileService(IUserAppContext userAppContext,
                               IRepository<UserLanguage> userLanguageRepository,
+                              IRepository<UserSkill> userSkillRepository,
+                              IRepository<UserExperience> userExperienceRepository,
                               IRepository<User> userRepository,
                               IRepository<Employer> employerRepository,
                               IRepository<Job> jobRepository,
@@ -36,6 +40,8 @@ namespace Talent.Services.Profile.Domain.Services
         {
             _userAppContext = userAppContext;
             _userLanguageRepository = userLanguageRepository;
+            _userSkillRepository = userSkillRepository;
+            _userExperienceRepository = userExperienceRepository;
             _userRepository = userRepository;
             _employerRepository = employerRepository;
             _jobRepository = jobRepository;
@@ -114,6 +120,78 @@ namespace Talent.Services.Profile.Domain.Services
         }
 
 
+        public bool AddNewSkills(AddSkillViewModel skill)
+        {
+            //Your code here;
+            if (skill.Id == null)
+            {
+                UserSkill addSkill = new UserSkill();
+                addSkill.Skill = skill.Name;
+                addSkill.ExperienceLevel = skill.Level;
+
+                _userSkillRepository.Add(addSkill);
+                return true;
+            }
+            return false;
+
+            //throw new NotImplementedException();
+        }
+
+        public async Task<bool> UpdateNewSkill(AddSkillViewModel model)
+        {
+
+            if (model.Id != null)
+            {
+                var updateskill = new UserSkill();
+                updateskill.Skill = model.Name;
+                updateskill.ExperienceLevel = model.Level;
+                updateskill.Id = model.Id;
+                await _userSkillRepository.Update(updateskill);
+                return true;
+            }
+            return false;
+        }
+
+        public bool AddNewExperience(ExperienceViewModel exp)
+        {
+            //Your code here;
+            if (exp.Id == null)
+            {
+                UserExperience addExp = new UserExperience();
+                addExp.Company = exp.Company;
+                addExp.Position = exp.Position;
+                addExp.Responsibilities = exp.Responsibilities;
+                addExp.Start = addExp.Start;
+                addExp.End = addExp.End;
+
+                _userExperienceRepository.Add(addExp);
+                return true;
+            }
+            return false;
+
+            //throw new NotImplementedException();
+        }
+
+
+        public async Task<bool> UpdateNewExperience(ExperienceViewModel model)
+        {
+
+            if (model.Id != null)
+            {
+                var updateExperience = new UserExperience();
+                updateExperience.Company = model.Company;
+                updateExperience.Position = model.Position;
+                updateExperience.Id = model.Id;
+                updateExperience.Responsibilities = model.Responsibilities;
+                updateExperience.Start = model.Start;
+                updateExperience.End = model.End;
+                await _userExperienceRepository.Update(updateExperience);
+                return true;
+            }
+            return false;
+        }
+
+
         public async Task<TalentProfileViewModel> GetTalentProfile(string Id)
         {
             //Your code here;
@@ -124,6 +202,8 @@ namespace Talent.Services.Profile.Domain.Services
                 //var experience = user.Skills.Select(x => ViewModelFromSkill(x)).ToList();
 
                 var languages = user.Languages.Select(x => ViewModelFromLanguages(x)).ToList();
+                var skill = user.Skills.Select(x => ViewModelFromSkill(x)).ToList();
+                var experience = user.Experience.Select(x => ViewModelExperience(x)).ToList();
 
                 var result = new TalentProfileViewModel
                 {
@@ -133,6 +213,8 @@ namespace Talent.Services.Profile.Domain.Services
                     LastName = user.LastName,
                     MiddleName = user.MiddleName,
                     Languages = languages,
+                    Skills = skill,
+                    Experience = experience,
                     Email = user.Email,
                     MobilePhone = user.MobilePhone,
                     IsMobilePhoneVerified = user.IsMobilePhoneVerified,
@@ -181,7 +263,41 @@ namespace Talent.Services.Profile.Domain.Services
                         newLang.Add(languages);
                     }
 
+                    var newSkill = new List<UserSkill>();
+                    foreach (var item in model.Skills)
+                    {
+                        var skills = existingUser.Skills.FirstOrDefault(x => x.Id == item.Id);
+                        if (skills == null)
+                        {
+                            skills = new UserSkill
+                            {
+                                Id = ObjectId.GenerateNewId().ToString(),
+                                IsDeleted = false
+                            };
+                        }
+                        UpdateSkillFromView(item, skills);
+                        newSkill.Add(skills);
+                    }
+
+                    var newExp = new List<UserExperience>();
+                    foreach (var item in model.Experience)
+                    {
+                        var exp = existingUser.Experience.FirstOrDefault(x => x.Id == item.Id);
+                        if (exp == null)
+                        {
+                            exp = new UserExperience
+                            {
+                                Id = ObjectId.GenerateNewId().ToString(),
+                                IsDeleted = false
+                            };
+                        }
+                        UpdateExperienceFromView(item, exp);
+                        newExp.Add(exp);
+                    }
+
                     existingUser.Languages = newLang;
+                    existingUser.Skills = newSkill;
+                    existingUser.Experience = newExp;
                     existingUser.Phone = model.Phone;
                     existingUser.FirstName = model.FirstName;
                     existingUser.LastName = model.LastName;
@@ -493,6 +609,15 @@ namespace Talent.Services.Profile.Domain.Services
             original.ExperienceLevel = model.Level;
             original.Skill = model.Name;
         }
+        protected void UpdateExperienceFromView(ExperienceViewModel model, UserExperience original)
+        {
+            original.Company = model.Company;
+            original.Position = model.Position;
+            original.Responsibilities = model.Responsibilities;
+            original.Start = model.Start;
+            original.End = model.End;
+        }
+
 
         protected void UpdateLanguageFromView(AddLanguageViewModel model, UserLanguage original)
         {
@@ -511,6 +636,19 @@ namespace Talent.Services.Profile.Domain.Services
                 Id = skill.Id,
                 Level = skill.ExperienceLevel,
                 Name = skill.Skill
+            };
+        }
+
+        protected ExperienceViewModel ViewModelExperience(UserExperience experience)
+        {
+            return new ExperienceViewModel
+            {
+                Id = experience.Id,
+                Company = experience.Company,
+                Position = experience.Position,
+                Responsibilities = experience.Responsibilities,
+                Start = experience.Start,
+                End = experience.End
             };
         }
 
