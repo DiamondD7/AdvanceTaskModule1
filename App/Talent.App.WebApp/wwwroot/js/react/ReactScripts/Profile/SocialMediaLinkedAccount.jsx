@@ -110,8 +110,8 @@ export default class SocialMediaLinkedAccount extends React.Component {
             <div className='row'>
                 <div className="ui sixteen wide column">
                     <React.Fragment>
-                        <button className="ui linkedin button"><i className="linkedin icon"></i>LinkedIn</button>
-                        <button className="ui black button"><i className="github icon"></i>GitHub </button>
+                        <a className="ui linkedin button" href={this.props.details.linkedIn} target="_blank"><i className="linkedin icon"></i>LinkedIn</a>
+                        <a className="ui black button" href={this.props.details.github} target="_blank"><i className="github icon"></i>GitHub </a>
                     </React.Fragment>
                     <button type="button" className="ui right floated teal button" onClick={this.openEdit}>Edit</button>
                 </div>

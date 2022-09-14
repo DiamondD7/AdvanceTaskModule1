@@ -222,7 +222,7 @@ export default class AccountProfile extends React.Component {
                                         >
                                             <SocialMediaLinkedAccount
                                                 details={this.state.profileData.linkedAccounts}
-                                                controlFunc={this.updateForComponentId}
+                                                controlFunc={this.updateForNewValues}
                                                 componentId='linkedAccounts'
                                             />
                                         </FormItemWrapper>

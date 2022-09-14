@@ -227,8 +227,6 @@ namespace Talent.Services.Profile.Domain.Services
                     Description = user.Description,
                     LinkedAccounts = user.LinkedAccounts,
                     Address = user.Address,
-                    /*LinkedAccounts = user.LinkedAccounts.LinkedIn,
-                    LinkedAccounts = user.LinkedAccounts.Github,*/
                     JobSeekingStatus = user.JobSeekingStatus
                 };
                 return result;
