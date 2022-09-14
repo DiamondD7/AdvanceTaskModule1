@@ -171,7 +171,7 @@ export default class AccountProfile extends React.Component {
 
     saveProfile() {
         var cookies = Cookies.get('talentAuthToken');
-        console.log("this is the profdata in saveProfile", this.state.profileData);
+        
         $.ajax({
             url: 'http://localhost:60290/profile/profile/updateTalentProfile',
             headers: {
@@ -183,6 +183,7 @@ export default class AccountProfile extends React.Component {
             data: JSON.stringify(this.state.profileData),
             success: function (res) {
                 console.log("this is the res", res.data);
+                console.log("this is the profdata in saveProfile", this.state.profileData);
                 this.loadData();
                 if (res.success == true) {
                     TalentUtil.notification.show("Profile updated sucessfully", "success", null, null)
@@ -275,6 +276,17 @@ export default class AccountProfile extends React.Component {
                                             details={this.state.profileData.experience}
                                             controlFunc={this.updateExperienceArrays}
                                         />
+
+                                        <FormItemWrapper
+                                            title='Visa Status'
+                                            tooltip='What is your current Visa/Citizenship status?'
+                                        >
+                                            <VisaStatus
+                                                visaStat={this.state.profileData.visaStatus}
+                                                visaExp={this.state.profileData.visaExpiryDate}
+                                                controlFunc={this.updateForComponentId}
+                                            />
+                                        </FormItemWrapper>
 
                                     </div>
                                 </form>

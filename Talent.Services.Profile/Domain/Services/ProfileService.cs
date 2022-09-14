@@ -219,6 +219,7 @@ namespace Talent.Services.Profile.Domain.Services
                     IsMobilePhoneVerified = user.IsMobilePhoneVerified,
                     Nationality = user.Nationality,
                     VisaStatus = user.VisaStatus,
+                    VisaExpiryDate = user.VisaExpiryDate,
                     ProfilePhoto = user.ProfilePhoto,
                     ProfilePhotoUrl = user.ProfilePhotoUrl,
                     VideoName = user.VideoName,
@@ -304,6 +305,7 @@ namespace Talent.Services.Profile.Domain.Services
                     existingUser.IsMobilePhoneVerified = model.IsMobilePhoneVerified;
                     existingUser.Nationality = model.Nationality;
                     existingUser.VisaStatus = model.VisaStatus;
+                    existingUser.VisaExpiryDate = model.VisaExpiryDate;
                     existingUser.ProfilePhoto = model.ProfilePhoto;
                     existingUser.ProfilePhotoUrl = model.ProfilePhotoUrl;
                     existingUser.VideoName = model.VideoName;
