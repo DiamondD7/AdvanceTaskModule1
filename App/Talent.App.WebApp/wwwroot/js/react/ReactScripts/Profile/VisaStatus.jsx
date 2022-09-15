@@ -4,45 +4,36 @@ import { ChildSingleInput } from '../Form/SingleInput.jsx';
 export default class VisaStatus extends React.Component {
     constructor(props) {
         super(props)
-        const visaStatus = props.visaStat ? Object.assign({}, props.visaStat) : { visaStatus: '' }
-        const visaExpired = props.visaExp ? Object.assign({}, props.visaExp) : { visaExpiryDate: '' }
+
+        const details = props.details ? Object.assign({}, props.details) : { visaStatus: '', visaExpiryDate: '' }
+
 
         this.state = {
             showEditSection: false,
-            newVisaStatus: visaStatus,
-            newVisaExpiryDate: visaExpired
+            newContact: details
         }
-        this.handleChangeStatus = this.handleChangeStatus.bind(this);
-        this.handleChangeExpiry = this.handleChangeExpiry.bind(this);
+        this.handleChange = this.handleChange.bind(this);
         this.renderEdit = this.renderEdit.bind(this);
+        this.renderDisplay = this.renderDisplay.bind(this);
         this.openEdit = this.openEdit.bind(this);
         this.closeEdit = this.closeEdit.bind(this);
         this.saveContact = this.saveContact.bind(this);
+        this.formatDate = this.formatDate.bind(this);
     }
 
-    handleChangeStatus(event) {
-        const data = Object.assign({}, this.state.newVisaStatus)
+    handleChange(event) {
+        const data = Object.assign({}, this.state.newContact)
         data[event.target.name] = event.target.value
         this.setState({
-            newVisaStatus: data
-        })
-    }
-
-    handleChangeExpiry(event) {
-        const data = Object.assign({}, this.state.newVisaExpiryDate)
-        data[event.target.name] = event.target.value
-        this.setState({
-            newVisaExpiryDate: data
+            newContact: data
         })
     }
 
     openEdit() {
-        const status = Object.assign({}, this.props.visaStat)
-        const expiry = Object.assign({}, this.props.visaExp)
+        const details = Object.assign({}, this.props.details)
         this.setState({
             showEditSection: true,
-            newVisaStatus: status,
-            newVisaExpiryDate: expiry
+            newContact: details
         })
     }
 
@@ -53,13 +44,13 @@ export default class VisaStatus extends React.Component {
     }
 
     saveContact() {
-        console.log("this is the visastatus:", this.state.newVisaStatus.visaStatus);
-        console.log("this is the visaexpiry:", this.state.newVisaExpiryDate.visaExpiryDate);
-        const statusdata = Object.assign({}, this.state.newVisaStatus);
-        const expiredData = Object.assign({}, this.state.visaExpiryDate);
-        this.props.controlFunc(this.props.componentId, statusdata)
-        this.props.controlFunc(this.props.componentId, expiredData)
+        console.log("this is the visastatus:", this.state.newContact.visaStatus);
+        console.log("this is the visaexpiry:", this.state.newContact.visaExpiryDate);
+        const data = Object.assign({}, this.state.newContact)
+
+        this.props.controlFunc(this.props.componentId, data)
         this.closeEdit()
+
     }
 
     renderEdit() {
@@ -69,7 +60,7 @@ export default class VisaStatus extends React.Component {
                     <div className="twelve wide field">
 
                         <label>Visa type</label>
-                        <select className="ui right labeled dropdown" placeholder="Visa type" value={this.state.newVisaStatus.visaStatus || ""} name="visaStatus" onChange={this.handleChangeStatus}>
+                        <select className="ui right labeled dropdown" placeholder="Visa type" value={this.state.newContact.visaStatus || ''} name="visaStatus" onChange={this.handleChange}>
                             <option value="">Visa type</option>
                             <option>Citizen</option>
                             <option>Permanent Resident</option>
@@ -79,18 +70,20 @@ export default class VisaStatus extends React.Component {
 
                     </div>
 
-                    <div className="twelve wide field">
-                        <ChildSingleInput
-                            inputType="text"
-                            label="Visa expiry date"
-                            name="visaExpiryDate"
-                            placeholder="DD/MM/YYYY"
-                            value={this.state.newVisaExpiryDate.visaExpiryDate || ''}
-                            controlFunc={this.handleChangeExpiry}
-                            maxLength={80}
-                            errorMessage="Please enter a valid date"
-                        />
-                    </div>
+                    {this.state.newContact.visaStatus == 'Student Visa' || this.state.newContact.visaStatus == 'Work Visa' ?
+                        <div className="twelve wide field">
+                            <ChildSingleInput
+                                inputType="text"
+                                label="Visa expiry date"
+                                name="visaExpiryDate"
+                                placeholder="DD/MM/YYYY"
+                                controlFunc={this.handleChange}
+                                maxLength={80}
+                                errorMessage="Please enter a valid date"
+                            />
+                        </div>
+                        : ""}
+
                 </div>
 
 
@@ -101,17 +94,16 @@ export default class VisaStatus extends React.Component {
     }
 
     renderDisplay() {
-        const temp =
-            <div>
-                <p>Visa type: {this.state.newVisaStatus.visaStatus}</p>
-                <p>Visa Expiry Date: {this.state.newVisaExpiryDate.visaExpiryDate}</p>
-            </div>
-            ;
+        const date = this.formatDate(this.props.details.visaExpiryDate);
         return (
             <div className='row'>
                 <div className="ui sixteen wide column">
                     <React.Fragment>
-                        {this.state.newVisaStatus.visaStatus === 'Citizen' || 'Permanent Resident' ? <p> Visa type: {this.state.newVisaStatus.visaStatus}</p> : temp}
+                        {this.props.details.visaStatus == 'Citizen' || this.props.details.visaStatus == 'Permanent Resident' ? <p> Visa type: {this.props.details.visaStatus}</p> :
+                            <div>
+                                <p>Visa type: {this.props.details.visaStatus}</p>
+                                <p>Visa Expiry Date: {date}</p>
+                            </div>}
                     </React.Fragment>
                     <button type="button" className="ui right floated teal button" onClick={this.openEdit}>Edit</button>
                 </div>
@@ -119,8 +111,13 @@ export default class VisaStatus extends React.Component {
         )
     }
 
+    formatDate(string) {
+        var options = { year: 'numeric', month: 'numeric', day: 'numeric' };
+        return new Date(string).toLocaleDateString([], options);
+    }
 
     render() {
+        
         return (
             <div>
                 {this.state.showEditSection ? this.renderEdit() : this.renderDisplay()}

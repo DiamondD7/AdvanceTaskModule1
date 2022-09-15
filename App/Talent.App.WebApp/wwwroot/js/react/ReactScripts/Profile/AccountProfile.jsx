@@ -282,8 +282,7 @@ export default class AccountProfile extends React.Component {
                                             tooltip='What is your current Visa/Citizenship status?'
                                         >
                                             <VisaStatus
-                                                visaStat={this.state.profileData.visaStatus}
-                                                visaExp={this.state.profileData.visaExpiryDate}
+                                                details={this.state.profileData}
                                                 controlFunc={this.updateForComponentId}
                                             />
                                         </FormItemWrapper>
