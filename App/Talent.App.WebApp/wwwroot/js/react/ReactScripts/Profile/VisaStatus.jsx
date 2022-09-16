@@ -46,6 +46,7 @@ export default class VisaStatus extends React.Component {
     saveContact() {
         console.log("this is the visastatus:", this.state.newContact.visaStatus);
         console.log("this is the visaexpiry:", this.state.newContact.visaExpiryDate);
+        this.setState({ stringDate: this.state.newContact.visaExpiryDate })
         const data = Object.assign({}, this.state.newContact)
 
         this.props.controlFunc(this.props.componentId, data)
@@ -71,7 +72,7 @@ export default class VisaStatus extends React.Component {
                     </div>
 
                     {this.state.newContact.visaStatus == 'Student Visa' || this.state.newContact.visaStatus == 'Work Visa' ?
-                        <div className="twelve wide field">
+                        <div className="seven wide field">
                             <ChildSingleInput
                                 inputType="text"
                                 label="Visa expiry date"
@@ -117,11 +118,9 @@ export default class VisaStatus extends React.Component {
     }
 
     render() {
-        
+
         return (
-            <div>
-                {this.state.showEditSection ? this.renderEdit() : this.renderDisplay()}
-            </div>
+            this.state.showEditSection ? this.renderEdit() : this.renderDisplay()
         )
     }
 }
