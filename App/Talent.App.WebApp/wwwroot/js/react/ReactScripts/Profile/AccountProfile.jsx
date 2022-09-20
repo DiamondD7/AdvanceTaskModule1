@@ -48,7 +48,7 @@ export default class AccountProfile extends React.Component {
                 },
                 jobSeekingStatus: {
                     status: "",
-                    availableDate: null
+                    availableDate: ""
                 }
             },
             loaderData: loaderData
@@ -163,6 +163,7 @@ export default class AccountProfile extends React.Component {
     }
 
     updateForNewValues(componentId, newValues) {
+        console.log("Thisis the new val:", newValues);
         let data = {};
         data[componentId] = newValues;
         console.log("data update: ", data);
@@ -287,6 +288,17 @@ export default class AccountProfile extends React.Component {
                                             />
                                         </FormItemWrapper>
 
+                                        <FormItemWrapper
+                                            title='Status'
+                                            tooltip='What is your current status in job seeking?'
+                                        >
+                                            <TalentStatus
+                                                details={this.state.profileData.jobSeekingStatus}
+                                                controlFunc={this.updateForNewValues}
+                                                componentId="jobSeekingStatus"
+                                            />
+                                                
+                                        </FormItemWrapper>
                                     </div>
                                 </form>
                             </div>
