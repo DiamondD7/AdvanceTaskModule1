@@ -118,10 +118,6 @@ export default class AccountProfile extends React.Component {
         }
         else {
             let updateProfile = Object.assign(this.state.profileData.languages, [...this.state.profileData.languages, newValues])
-            /*for (var i = 0; i <= this.state.profileData.languages; i++) {
-                if (this.state.profileData.languages[i].id === newValues.id) {
-                }
-            }*/
         }
         this.saveProfile();
         /*this.setState({
@@ -172,7 +168,7 @@ export default class AccountProfile extends React.Component {
 
     saveProfile() {
         var cookies = Cookies.get('talentAuthToken');
-        
+
         $.ajax({
             url: 'http://localhost:60290/profile/profile/updateTalentProfile',
             headers: {
@@ -229,9 +225,8 @@ export default class AccountProfile extends React.Component {
                                             />
                                         </FormItemWrapper>
 
-                                        <Description
+                                        <Description />
 
-                                        />
 
                                         <FormItemWrapper
                                             title='User Details'
@@ -297,7 +292,16 @@ export default class AccountProfile extends React.Component {
                                                 controlFunc={this.updateForNewValues}
                                                 componentId="jobSeekingStatus"
                                             />
-                                                
+
+                                        </FormItemWrapper>
+
+                                        <FormItemWrapper
+                                            title='Profile Photo'
+                                        >
+                                            <PhotoUpload
+                                                details={this.state.profileData.profilePhoto}
+                                                controlFunc={this.updateForComponentId}
+                                            />
                                         </FormItemWrapper>
                                     </div>
                                 </form>

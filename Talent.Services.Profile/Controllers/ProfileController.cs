@@ -158,7 +158,7 @@ namespace Talent.Services.Profile.Controllers
             {
                 if (_profileService.AddNewLanguage(language))
                 {
-                    return Json(new { Success = true, data = language});
+                    return Json(new { Success = true, data = language });
                 }
             }
             return Json(new { Success = false });
@@ -181,6 +181,17 @@ namespace Talent.Services.Profile.Controllers
             //throw new NotImplementedException();
         }
 
+        /*        [HttpDelete("deleteLanguage/{id}")]
+                [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "talent")]
+                public async Task<IActionResult> DeleteLanguage(int id)
+                {
+                    //Your code here;
+                    var lang = await _userLanguageRepository.FindAsync(id);
+                    await _userLanguageRepository.Delete(lang);
+                    return Json(new { Success = true, data = lang });
+                    //throw new NotImplementedException();
+                }*/
+
         [HttpPost("deleteLanguage")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "talent")]
         public async Task<ActionResult> DeleteLanguage([FromBody] AddLanguageViewModel language)
@@ -190,7 +201,7 @@ namespace Talent.Services.Profile.Controllers
             {
                 if (await _profileService.DeleteLanguage(language))
                 {
-                    return Json(new { Success = true, data = language });
+                    return Json(new { Success = true, data = language, id = language.Id });
                 }
             }
             return Json(new { Success = false });
@@ -207,7 +218,7 @@ namespace Talent.Services.Profile.Controllers
 
         [HttpPost("addSkill")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "talent")]
-        public ActionResult AddSkill([FromBody]AddSkillViewModel skill)
+        public ActionResult AddSkill([FromBody] AddSkillViewModel skill)
         {
             if (ModelState.IsValid)
             {
@@ -223,7 +234,7 @@ namespace Talent.Services.Profile.Controllers
 
         [HttpPost("updateSkill")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "talent")]
-        public async Task<IActionResult> UpdateSkill([FromBody]AddSkillViewModel skill)
+        public async Task<IActionResult> UpdateSkill([FromBody] AddSkillViewModel skill)
         {
             if (ModelState.IsValid)
             {
@@ -239,7 +250,7 @@ namespace Talent.Services.Profile.Controllers
 
         [HttpPost("deleteSkill")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "talent")]
-        public async Task<IActionResult> DeleteSkill([FromBody]AddSkillViewModel skill)
+        public async Task<IActionResult> DeleteSkill([FromBody] AddSkillViewModel skill)
         {
             //Your code here;
             throw new NotImplementedException();
@@ -390,7 +401,7 @@ namespace Talent.Services.Profile.Controllers
 
         [HttpPost("addEducation")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "talent")]
-        public IActionResult AddEducation([FromBody]AddEducationViewModel model)
+        public IActionResult AddEducation([FromBody] AddEducationViewModel model)
         {
             //Your code here;
             throw new NotImplementedException();
@@ -398,7 +409,7 @@ namespace Talent.Services.Profile.Controllers
 
         [HttpPost("updateEducation")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "talent")]
-        public async Task<IActionResult> UpdateEducation([FromBody]AddEducationViewModel model)
+        public async Task<IActionResult> UpdateEducation([FromBody] AddEducationViewModel model)
         {
             //Your code here;
             throw new NotImplementedException();
@@ -412,7 +423,7 @@ namespace Talent.Services.Profile.Controllers
             throw new NotImplementedException();
         }
 
-     
+
         #endregion
 
         #region EmployerOrRecruiter
@@ -457,7 +468,7 @@ namespace Talent.Services.Profile.Controllers
             if (ModelState.IsValid)
             {
                 //check if employer is client 5be40d789b9e1231cc0dc51b
-                var recruiterClients =(await _recruiterRepository.GetByIdAsync(_userAppContext.CurrentUserId)).Clients;
+                var recruiterClients = (await _recruiterRepository.GetByIdAsync(_userAppContext.CurrentUserId)).Clients;
 
                 if (recruiterClients.Select(x => x.EmployerId == employer.Id).FirstOrDefault())
                 {
@@ -502,7 +513,7 @@ namespace Talent.Services.Profile.Controllers
             //Your code here;
             throw new NotImplementedException();
         }
-        
+
         #endregion
 
         #region TalentFeed
@@ -513,13 +524,13 @@ namespace Talent.Services.Profile.Controllers
         {
             String talentId = String.IsNullOrWhiteSpace(id) ? _userAppContext.CurrentUserId : id;
             var userProfile = await _profileService.GetTalentProfile(talentId);
-          
+
             return Json(new { Success = true, data = userProfile });
         }
 
         [HttpPost("updateTalentProfile")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "talent")]
-        public async Task<IActionResult> UpdateTalentProfile([FromBody]TalentProfileViewModel profile)
+        public async Task<IActionResult> UpdateTalentProfile([FromBody] TalentProfileViewModel profile)
         {
             if (ModelState.IsValid)
             {
@@ -530,6 +541,8 @@ namespace Talent.Services.Profile.Controllers
             }
             return Json(new { Success = false });
         }
+
+
 
         [HttpGet("getTalent")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "recruiter, employer")]
@@ -598,7 +611,7 @@ namespace Talent.Services.Profile.Controllers
 
         [HttpPost("getEmployerListFilter")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "recruiter")]
-        public IActionResult GetEmployerListFilter([FromBody]SearchCompanyModel model)
+        public IActionResult GetEmployerListFilter([FromBody] SearchCompanyModel model)
         {
             try
             {
@@ -674,11 +687,11 @@ namespace Talent.Services.Profile.Controllers
         {
             try
             {
-                var result=await _profileService.GetClientListAsync(_userAppContext.CurrentUserId);
+                var result = await _profileService.GetClientListAsync(_userAppContext.CurrentUserId);
 
                 return Json(new { Success = true, result });
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 return Json(new { Success = false, e.Message });
             }

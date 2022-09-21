@@ -24,6 +24,7 @@ namespace Talent.Services.Profile.Domain.Contracts
         Task<IEnumerable<TalentSnapshotViewModel>> GetTalentSnapshotList(IEnumerable<string> ids);
 
         Task<bool> UpdateTalentProfile(TalentProfileViewModel profile, String updaterId);
+
         Task<bool> UpdateTalentPhoto(string talentId, IFormFile file);
 
         Task<bool> AddTalentVideo(string talentId, IFormFile file);

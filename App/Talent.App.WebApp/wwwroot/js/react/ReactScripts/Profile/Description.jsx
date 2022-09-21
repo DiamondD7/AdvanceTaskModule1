@@ -6,26 +6,37 @@ export class Description extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            characters: 0
+            characters: 0,
+            summaryChars:0
         };
         this.update = this.update.bind(this);
+        this.updateSumamry = this.updateSumamry.bind(this);
     };
 
     update(event) {
-        let data = {};
-        data[event.target.name] = event.target.value;
-        this.props.updateStateData(data);
-        let description = event.target.value;
+        let description = event.target.value.length;
         this.setState({
-            characters: description.length
+            characters: description
+        })
+    }
+
+    updateSumamry(event) {
+        let summary = event.target.value.length;
+        this.setState({
+            summaryChars: summary
         })
     }
 
     render() {
-        const characterLimit = 600;
+        const characterLimit = 530;
         const summaryLimit = 150;
-        let characters = this.props.description ? this.props.description.length : 0;
-        
+        /*let characters = this.props.description ? this.props.description.length : 0;*/
+
+        const {
+            characters,
+            summaryChars
+        } = this.state;
+
         return (
             <React.Fragment>
                 <div className="four wide column">
@@ -34,11 +45,11 @@ export class Description extends React.Component {
                 </div>
                 <div className="ten wide column">
                     <div className="field" >
-                        <input placeholder="Please provide a short summary about yourself" />
-{/*                        <textarea maxLength={summaryLimit} name="Summary" placeholder="Please provide a short summary about yourself."></textarea>
-*/}                    </div>
+                        <input maxLength={summaryLimit} name="summary" placeholder="Please provide a short summary about yourself" onChange={this.updateSumamry} />
+                        <p>Characters remaining: {summaryChars} / {summaryLimit}</p>
+                    </div>
                     <div className="field" >
-                        <textarea maxLength={characterLimit} name="Description" placeholder="Please tell us about any hobbies, additional expertise, or anything else you’d like to add." value={this.props.description} onChange={this.update} ></textarea>
+                        <textarea maxLength={characterLimit} name="Description" placeholder="Please tell us about any hobbies, additional expertise, or anything else you’d like to add." onChange={this.update} ></textarea>
                     </div>
                     <p>Characters remaining : {characters} / {characterLimit}</p>
                 </div>

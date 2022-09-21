@@ -32,11 +32,11 @@ export default class Skill extends React.Component {
     }
 
     openEdit() {
-        this.setState({ showEditSection: true, name: this.props.details.name, level: this.props.details.level, id: this.props.details.id})
+        this.setState({ showEditSection: true, name: this.props.details.name, level: this.props.details.level, id: this.props.details.id })
     }
 
     openUpdate(items) {
-        this.setState({ showUpdateSection: true, name: items.name, level: items.level, id: items.id})
+        this.setState({ showUpdateSection: true, name: items.name, level: items.level, id: items.id })
     }
 
     closeUpdate() {
@@ -110,6 +110,34 @@ export default class Skill extends React.Component {
         })
     }
 
+    /*deleteSkill() {
+        var cookies = Cookies.get('talentAuthToken');
+        $.ajax({
+            url: 'http://localhost:60290/profile/profile/deleteSkill',
+            headers: {
+                'Authorization': 'Bearer ' + cookies,
+                'Content-Type': 'application/json'
+            },
+            type: "POST",
+            dataType: "json",
+            success: function (res) {
+                if (res.success == true) {
+                    TalentUtil.notification.show("Profile deleted sucessfully", "success", null, null)
+                } else {
+                    console.log(res.state);
+                    TalentUtil.notification.show("Profile did not delete successfully", "error", null, null)
+                }
+
+            }.bind(this),
+            error: function (res, a, b) {
+                console.log(res)
+                console.log(a)
+                console.log(b)
+            }
+
+        })
+    }*/
+
 
     renderEdit() {
         let selectedItem = this.state.level;
@@ -175,47 +203,47 @@ export default class Skill extends React.Component {
         )
     }
 
-  
-   render() {
-       return (
-           <FormItemWrapper
-               title='Skills'
-               tooltip='Select skills'
-           >
-               {this.state.showEditSection ? this.renderEdit() : ""}
 
-               {this.state.showUpdateSection ? this.renderUpdate() : ""}
+    render() {
+        return (
+            <FormItemWrapper
+                title='Skills'
+                tooltip='Select skills'
+            >
+                {this.state.showEditSection ? this.renderEdit() : ""}
 
-               <table className="ui table">
-                   <thead className="full-width">
-                       <tr>
-                           <th>Id</th>
-                           <th>Skill</th>
-                           <th>Level</th>
-                           <th>
-                               <button type="button" className="ui right floated teal button" onClick={this.openEdit}>
-                                   <i className="plus icon"></i> Add New
-                               </button>
-                           </th>
-                       </tr>
-                   </thead>
+                {this.state.showUpdateSection ? this.renderUpdate() : ""}
 
-                   <tbody>
+                <table className="ui table">
+                    <thead className="full-width">
+                        <tr>
+                            <th>Id</th>
+                            <th>Skill</th>
+                            <th>Level</th>
+                            <th>
+                                <button type="button" className="ui right floated teal button" onClick={this.openEdit}>
+                                    <i className="plus icon"></i> Add New
+                                </button>
+                            </th>
+                        </tr>
+                    </thead>
 
-                       {this.props.details.map((skills, index) =>
-                           <tr key={index}>
-                               <td>{skills.id}</td>
-                               <td>{skills.name === null ? "NULL" : skills.name}</td>
-                               <td>{skills.level === null ? "NULL" : skills.level}</td>
-                               <td>
-                                   <button type="button" className="circular ui icon button" onClick={() => this.openUpdate(skills)}><i className="pencil alternate icon"></i></button>
-                                   <button type="button" className="circular ui icon button"><i className="trash alternate icon"></i></button>
-                               </td>
-                           </tr>)}
-                   </tbody>
-               </table>
-           </FormItemWrapper> 
-           )
+                    <tbody>
+
+                        {this.props.details.map((skills, index) =>
+                            <tr key={index}>
+                                <td>{skills.id}</td>
+                                <td>{skills.name === null ? "NULL" : skills.name}</td>
+                                <td>{skills.level === null ? "NULL" : skills.level}</td>
+                                <td>
+                                    <button type="button" className="circular ui icon button" onClick={() => this.openUpdate(skills)}><i className="pencil alternate icon"></i></button>
+                                    <button type="button" className="circular ui icon button"><i className="trash alternate icon"></i></button>
+                                </td>
+                            </tr>)}
+                    </tbody>
+                </table>
+            </FormItemWrapper>
+        )
     }
 }
 

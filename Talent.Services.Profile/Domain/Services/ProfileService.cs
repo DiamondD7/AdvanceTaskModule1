@@ -81,27 +81,6 @@ namespace Talent.Services.Profile.Domain.Services
                 return true;
             }
             return false;
-
-            /*try
-            {
-                User existingUser = (await _userRepository.GetByIdAsync(model.CurrentUserId));
-                var newLang = new List<UserLanguage>();
-
-                var languages = existingUser.Languages.SingleOrDefault(x => x.Id == model.Id);
-
-                UpdateLanguageFromView(model, languages);
-                newLang.Add(languages);
-
-                existingUser.Languages = newLang;
-
-                await _userRepository.Update(existingUser);
-
-                return true;
-            }
-            catch (MongoException e)
-            {
-                return false;
-            }*/
         }
 
 
@@ -112,7 +91,8 @@ namespace Talent.Services.Profile.Domain.Services
                 UserLanguage delLang = new UserLanguage();
                 delLang.Id = model.Id;
                 delLang.Language = model.Name;
-                delLang.LanguageLevel = model.Level;
+                delLang.LanguageLevel= model.Level;
+                delLang.IsDeleted = true;
                 await _userLanguageRepository.Delete(delLang);
                 return true;
             }
